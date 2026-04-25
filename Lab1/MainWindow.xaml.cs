@@ -284,25 +284,41 @@ public partial class MainWindow : Window
     private void MenuPaste_Click(object sender, RoutedEventArgs e) =>
         ApplicationCommands.Paste.Execute(null, FocusManager.GetFocusedElement(this) as IInputElement);
 
-    /// <summary>Переключает интерфейс на тёмную тему (тёмный фон окна).</summary>
-    private void MenuDarkTheme_Click(object sender, RoutedEventArgs e)
-    {
-        Background = new SolidColorBrush(Color.FromRgb(30, 30, 30));
-    }
+    /// <summary>Переключает интерфейс на тёмную тему через ResourceDictionary.</summary>
+    private void MenuDarkTheme_Click(object sender, RoutedEventArgs e) =>
+        ApplyTheme("Themes/DarkTheme.xaml");
 
-    /// <summary>Переключает интерфейс на светлую тему (белый фон окна).</summary>
-    private void MenuLightTheme_Click(object sender, RoutedEventArgs e)
-    {
-        Background = new SolidColorBrush(Colors.White);
-    }
+    /// <summary>Переключает интерфейс на светлую тему через ResourceDictionary.</summary>
+    private void MenuLightTheme_Click(object sender, RoutedEventArgs e) =>
+        ApplyTheme("Themes/LightTheme.xaml");
 
     /// <summary>Обрабатывает включение чекбокса тёмного режима на вкладке настроек.</summary>
     private void ChkDarkMode_Checked(object sender, RoutedEventArgs e) =>
-        MenuDarkTheme_Click(sender, e);
+        ApplyTheme("Themes/DarkTheme.xaml");
 
     /// <summary>Обрабатывает выключение чекбокса тёмного режима на вкладке настроек.</summary>
     private void ChkDarkMode_Unchecked(object sender, RoutedEventArgs e) =>
-        MenuLightTheme_Click(sender, e);
+        ApplyTheme("Themes/LightTheme.xaml");
+
+    /// <summary>
+    /// Применяет тему, заменяя словарь ресурсов темы в Application.Resources.
+    /// </summary>
+    /// <param name="themeUri">Относительный URI файла темы (.xaml).</param>
+    private static void ApplyTheme(string themeUri)
+    {
+        var dict = new ResourceDictionary
+        {
+            Source = new Uri(themeUri, UriKind.Relative)
+        };
+
+        var existing = Application.Current.Resources.MergedDictionaries
+            .FirstOrDefault(d => d.Source?.OriginalString.Contains("Theme") == true);
+
+        if (existing is not null)
+            Application.Current.Resources.MergedDictionaries.Remove(existing);
+
+        Application.Current.Resources.MergedDictionaries.Add(dict);
+    }
 
     /// <summary>Обновляет строку состояния при переключении между вкладками.</summary>
     private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
