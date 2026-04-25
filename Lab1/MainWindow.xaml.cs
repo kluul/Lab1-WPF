@@ -1,6 +1,7 @@
 using Lab1.Models;
 using Lab1.Services;
 using Lab1.Validation;
+
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -38,21 +39,11 @@ public partial class MainWindow : Window
     // ИНИЦИАЛИЗАЦИЯ
     // ═══════════════════════════════════════════════════════════════════
 
-    /// <summary>Заполняет коллекцию тестовой статистикой за последние 7 дней.</summary>
+    /// <summary>Заполняет коллекцию тестовой статистикой через StatisticsService.</summary>
     private void InitializeStatistics()
     {
-        var rng = new Random(42);
-        for (int i = 6; i >= 0; i--)
-        {
-            _statistics.Add(new DayStatistic
-            {
-                Date = DateTime.Today.AddDays(-i),
-                Productivity = rng.Next(40, 95),
-                Satisfaction = rng.Next(35, 90),
-                CompletedHabits = rng.Next(1, 6),
-                Progress = rng.Next(30, 100)
-            });
-        }
+        foreach (var stat in StatisticsService.GenerateSampleStatistics(days: 7))
+            _statistics.Add(stat);
     }
 
     // ═══════════════════════════════════════════════════════════════════
