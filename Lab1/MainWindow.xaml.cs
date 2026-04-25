@@ -1,4 +1,5 @@
 using Lab1.Models;
+using Lab1.Validation;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -104,22 +105,17 @@ public partial class MainWindow : Window
         UpdateStatus();
     }
 
-    /// <summary>Проверяет корректность заполнения формы. Возвращает true если данные валидны.</summary>
+    /// <summary>Проверяет корректность заполнения формы через ProfileValidator.</summary>
     private bool ValidateProfile()
     {
-        if (string.IsNullOrWhiteSpace(txtFirstName.Text))
+        var result = ProfileValidator.ValidateAll(
+            txtFirstName.Text,
+            txtLastName.Text,
+            dtpBirthDate.SelectedDate);
+
+        if (!result.IsValid)
         {
-            SetValidationError("Введите имя.");
-            return false;
-        }
-        if (string.IsNullOrWhiteSpace(txtLastName.Text))
-        {
-            SetValidationError("Введите фамилию.");
-            return false;
-        }
-        if (dtpBirthDate.SelectedDate.HasValue && dtpBirthDate.SelectedDate.Value > DateTime.Today)
-        {
-            SetValidationError("Дата рождения не может быть в будущем.");
+            SetValidationError(result.ErrorMessage);
             return false;
         }
         lblValidation.Text = string.Empty;
