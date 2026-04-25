@@ -1,4 +1,5 @@
 using Lab1.Models;
+using Lab1.Services;
 using Lab1.Validation;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
@@ -17,7 +18,7 @@ public partial class MainWindow : Window
     private readonly UserProfile _profile = new();
 
     /// <summary>Коллекция привычек, привязанная к DataGrid.</summary>
-    public ObservableCollection<Habit> Habits { get; } = new();
+    public ObservableCollection<Habit> Habits { get; } = HabitService.CreateSampleHabits();
 
     /// <summary>Коллекция статистики по дням, привязанная к ListView.</summary>
     private readonly ObservableCollection<DayStatistic> _statistics = new();
@@ -102,6 +103,7 @@ public partial class MainWindow : Window
 
         lblValidation.Text = "✔ Данные сохранены успешно!";
         lblValidation.Foreground = Brushes.Green;
+        SaveTodayStatistic();
         UpdateStatus();
     }
 
@@ -212,6 +214,19 @@ public partial class MainWindow : Window
     private void DgHabits_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
         Dispatcher.InvokeAsync(UpdateStatus);
+    }
+
+    /// <summary>Сохраняет или обновляет запись статистики за сегодня в коллекции.</summary>
+    private void SaveTodayStatistic()
+    {
+        var todayStat = HabitService.BuildTodayStatistic(
+            Habits, slProductivity.Value, slSatisfaction.Value);
+
+        var existing = _statistics.FirstOrDefault(s => s.Date == DateTime.Today);
+        if (existing is not null)
+            _statistics.Remove(existing);
+
+        _statistics.Add(todayStat);
     }
 
     // ═══════════════════════════════════════════════════════════════════
