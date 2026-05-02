@@ -1,28 +1,26 @@
 namespace Lab1.Validation;
 
-/// <summary>Результат валидации профиля пользователя.</summary>
+// Результат валидации профиля пользователя
 public sealed class ValidationResult
 {
-    /// <summary>Признак успешной валидации.</summary>
+    // Признак успешной валидации
     public bool IsValid { get; init; }
 
-    /// <summary>Сообщение об ошибке. Пустая строка при успехе.</summary>
+    // Сообщение об ошибке, пустая строка при успехе
     public string ErrorMessage { get; init; } = string.Empty;
 
-    /// <summary>Возвращает успешный результат без ошибок.</summary>
+    // Возвращает успешный результат без ошибок
     public static ValidationResult Ok() => new() { IsValid = true };
 
-    /// <summary>Возвращает результат с ошибкой.</summary>
-    /// <param name="message">Текст ошибки для отображения пользователю.</param>
+    // Возвращает результат с ошибкой
     public static ValidationResult Fail(string message) =>
         new() { IsValid = false, ErrorMessage = message };
 }
 
-/// <summary>Набор правил валидации данных профиля пользователя.</summary>
+// Набор правил валидации данных профиля пользователя
 public static class ProfileValidator
 {
-    /// <summary>Проверяет, что имя не пустое и содержит только буквы.</summary>
-    /// <param name="firstName">Значение поля «Имя».</param>
+    // Проверяет, что имя не пустое и содержит только буквы
     public static ValidationResult ValidateFirstName(string firstName)
     {
         if (string.IsNullOrWhiteSpace(firstName))
@@ -32,8 +30,7 @@ public static class ProfileValidator
         return ValidationResult.Ok();
     }
 
-    /// <summary>Проверяет, что фамилия не пустая и содержит только буквы.</summary>
-    /// <param name="lastName">Значение поля «Фамилия».</param>
+    // Проверяет, что фамилия не пустая и содержит только буквы
     public static ValidationResult ValidateLastName(string lastName)
     {
         if (string.IsNullOrWhiteSpace(lastName))
@@ -43,8 +40,7 @@ public static class ProfileValidator
         return ValidationResult.Ok();
     }
 
-    /// <summary>Проверяет, что дата рождения не находится в будущем.</summary>
-    /// <param name="birthDate">Выбранная дата рождения или null если не задана.</param>
+    // Проверяет, что дата рождения не находится в будущем
     public static ValidationResult ValidateBirthDate(DateTime? birthDate)
     {
         if (birthDate.HasValue && birthDate.Value > DateTime.Today)
@@ -52,10 +48,7 @@ public static class ProfileValidator
         return ValidationResult.Ok();
     }
 
-    /// <summary>Последовательно применяет все правила валидации профиля.</summary>
-    /// <param name="firstName">Имя пользователя.</param>
-    /// <param name="lastName">Фамилия пользователя.</param>
-    /// <param name="birthDate">Дата рождения пользователя.</param>
+    // Последовательно применяет все правила валидации профиля
     public static ValidationResult ValidateAll(
         string firstName, string lastName, DateTime? birthDate)
     {

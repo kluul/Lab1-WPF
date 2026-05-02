@@ -1,41 +1,41 @@
 namespace Lab1.Models;
 
-/// <summary>Профиль пользователя, хранящий всю персональную информацию.</summary>
+// Профиль пользователя, хранящий всю персональную информацию
 public class UserProfile
 {
-    /// <summary>Имя пользователя.</summary>
+    // Имя пользователя
     public string FirstName { get; set; } = string.Empty;
 
-    /// <summary>Фамилия пользователя.</summary>
+    // Фамилия пользователя
     public string LastName { get; set; } = string.Empty;
 
-    /// <summary>Пароль пользователя (имитация хранения).</summary>
+    // Пароль пользователя (имитация хранения)
     public string Password { get; set; } = string.Empty;
 
-    /// <summary>Дата рождения пользователя.</summary>
+    // Дата рождения пользователя
     public DateTime? BirthDate { get; set; }
 
-    /// <summary>Уровень образования.</summary>
+    // Уровень образования
     public string Education { get; set; } = string.Empty;
 
-    /// <summary>Список выбранных хобби.</summary>
+    // Список выбранных хобби
     public List<string> Hobbies { get; set; } = new();
 
-    /// <summary>Флаг: получать уведомления.</summary>
+    // Флаг: получать уведомления
     public bool ReceiveNotifications { get; set; }
 
-    /// <summary>Флаг: показывать статистику публично.</summary>
+    // Флаг: показывать статистику публично
     public bool ShowPublicStats { get; set; }
 
-    /// <summary>Флаг: автосохранение данных.</summary>
+    // Флаг: автосохранение данных
     public bool AutoSave { get; set; } = true;
 
-    /// <summary>Уровень физической активности: Низкий, Средний или Высокий.</summary>
+    // Уровень физической активности: Низкий, Средний или Высокий
     public string ActivityLevel { get; set; } = "Средний";
 
-    /// <summary>Путь к файлу аватара пользователя.</summary>
+    // Путь к файлу аватара пользователя
     public string AvatarPath { get; set; } = string.Empty;
 
-    /// <summary>Возвращает полное имя пользователя (Имя Фамилия).</summary>
+    // Возвращает полное имя пользователя (Имя Фамилия)
     public string FullName => $"{FirstName} {LastName}".Trim();
 }

@@ -1,7 +1,6 @@
 using Lab1.Models;
 using Lab1.Services;
 using Lab1.Validation;
-
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -12,24 +11,24 @@ using System.Windows.Media.Imaging;
 
 namespace Lab1;
 
-/// <summary>Главное окно приложения «Менеджер привычек».</summary>
+// Главное окно приложения «Менеджер привычек»
 public partial class MainWindow : Window
 {
-    /// <summary>Профиль текущего пользователя.</summary>
-    private readonly UserProfile _profile = new();
+    // Профиль текущего пользователя
+    private readonly UserProfile profile = new();
 
-    /// <summary>Коллекция привычек, привязанная к DataGrid.</summary>
+    // Коллекция привычек, привязанная к DataGrid
     public ObservableCollection<Habit> Habits { get; } = HabitService.CreateSampleHabits();
 
-    /// <summary>Коллекция статистики по дням, привязанная к ListView.</summary>
-    private readonly ObservableCollection<DayStatistic> _statistics = new();
+    // Коллекция статистики по дням, привязанная к ListView
+    private readonly ObservableCollection<DayStatistic> statistics = new();
 
-    /// <summary>Инициализирует компоненты окна и заполняет начальные данные.</summary>
+    // Инициализирует компоненты окна и заполняет начальные данные
     public MainWindow()
     {
         InitializeComponent();
         DataContext = this;
-        lvStatistics.ItemsSource = _statistics;
+        lvStatistics.ItemsSource = statistics;
         InitializeStatistics();
         UpdateStatus();
         statusDate.Text = DateTime.Now.ToShortDateString();
@@ -39,28 +38,28 @@ public partial class MainWindow : Window
     // ИНИЦИАЛИЗАЦИЯ
     // ═══════════════════════════════════════════════════════════════════
 
-    /// <summary>Заполняет коллекцию тестовой статистикой через StatisticsService.</summary>
+    // Заполняет коллекцию тестовой статистикой через StatisticsService
     private void InitializeStatistics()
     {
         foreach (var stat in StatisticsService.GenerateSampleStatistics(days: 7))
-            _statistics.Add(stat);
+            statistics.Add(stat);
     }
 
     // ═══════════════════════════════════════════════════════════════════
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
     // ═══════════════════════════════════════════════════════════════════
 
-    /// <summary>Обновляет строку состояния с актуальным числом привычек и именем пользователя.</summary>
+    // Обновляет строку состояния с актуальным числом привычек и именем пользователя
     private void UpdateStatus()
     {
         int completed = Habits.Count(h => h.IsCompleted);
         statusText.Text = $"Готово | Привычек: {Habits.Count} (выполнено: {completed})";
-        statusUser.Text = string.IsNullOrEmpty(_profile.FullName)
+        statusUser.Text = string.IsNullOrEmpty(profile.FullName)
             ? "Пользователь не задан"
-            : _profile.FullName;
+            : profile.FullName;
     }
 
-    /// <summary>Пересчитывает прогресс дня как среднее продуктивности и удовлетворённости.</summary>
+    // Пересчитывает прогресс дня как среднее продуктивности и удовлетворённости
     private void UpdateDayProgress()
     {
         if (pbDayProgress is null || slProductivity is null || slSatisfaction is null) return;
@@ -71,26 +70,26 @@ public partial class MainWindow : Window
     // ВКЛАДКА «ЛИЧНЫЕ ДАННЫЕ»
     // ═══════════════════════════════════════════════════════════════════
 
-    /// <summary>Сохраняет данные из формы в объект профиля после валидации.</summary>
+    // Сохраняет данные из формы в объект профиля после валидации
     private void SaveProfile_Click(object sender, RoutedEventArgs e)
     {
         if (!ValidateProfile()) return;
 
-        _profile.FirstName = txtFirstName.Text.Trim();
-        _profile.LastName = txtLastName.Text.Trim();
-        _profile.Password = pwdPassword.Password;
-        _profile.BirthDate = dtpBirthDate.SelectedDate;
-        _profile.Education = (cmbEducation.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
-        _profile.ReceiveNotifications = chkNotifications.IsChecked == true;
-        _profile.ShowPublicStats = chkPublicStats.IsChecked == true;
-        _profile.AutoSave = chkAutoSave.IsChecked == true;
-        _profile.ActivityLevel = rbHigh.IsChecked == true ? "Высокий"
-                                : rbLow.IsChecked == true ? "Низкий"
-                                : "Средний";
+        profile.FirstName = txtFirstName.Text.Trim();
+        profile.LastName = txtLastName.Text.Trim();
+        profile.Password = pwdPassword.Password;
+        profile.BirthDate = dtpBirthDate.SelectedDate;
+        profile.Education = (cmbEducation.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
+        profile.ReceiveNotifications = chkNotifications.IsChecked == true;
+        profile.ShowPublicStats = chkPublicStats.IsChecked == true;
+        profile.AutoSave = chkAutoSave.IsChecked == true;
+        profile.ActivityLevel = rbHigh.IsChecked == true ? "Высокий"
+                              : rbLow.IsChecked == true  ? "Низкий"
+                              : "Средний";
 
-        _profile.Hobbies.Clear();
+        profile.Hobbies.Clear();
         foreach (ListBoxItem item in lstHobbies.SelectedItems)
-            _profile.Hobbies.Add(item.Content?.ToString() ?? "");
+            profile.Hobbies.Add(item.Content?.ToString() ?? "");
 
         lblValidation.Text = "✔ Данные сохранены успешно!";
         lblValidation.Foreground = Brushes.Green;
@@ -98,7 +97,7 @@ public partial class MainWindow : Window
         UpdateStatus();
     }
 
-    /// <summary>Проверяет корректность заполнения формы через ProfileValidator.</summary>
+    // Проверяет корректность заполнения формы через ProfileValidator
     private bool ValidateProfile()
     {
         var result = ProfileValidator.ValidateAll(
@@ -115,15 +114,14 @@ public partial class MainWindow : Window
         return true;
     }
 
-    /// <summary>Выводит сообщение об ошибке валидации красным цветом.</summary>
-    /// <param name="message">Текст ошибки для отображения.</param>
+    // Выводит сообщение об ошибке валидации красным цветом
     private void SetValidationError(string message)
     {
         lblValidation.Text = $"⚠ {message}";
         lblValidation.Foreground = Brushes.Red;
     }
 
-    /// <summary>Сбрасывает все поля формы личных данных к значениям по умолчанию.</summary>
+    // Сбрасывает все поля формы личных данных к значениям по умолчанию
     private void ResetProfile_Click(object sender, RoutedEventArgs e)
     {
         txtFirstName.Text = string.Empty;
@@ -140,7 +138,7 @@ public partial class MainWindow : Window
         lblValidation.Text = string.Empty;
     }
 
-    /// <summary>Открывает диалог выбора файла изображения и устанавливает аватар.</summary>
+    // Открывает диалог выбора файла изображения и устанавливает аватар
     private void LoadAvatar_Click(object sender, RoutedEventArgs e)
     {
         var dlg = new OpenFileDialog
@@ -152,14 +150,14 @@ public partial class MainWindow : Window
 
         var bitmap = new BitmapImage(new Uri(dlg.FileName));
         imgAvatar.Source = bitmap;
-        _profile.AvatarPath = dlg.FileName;
+        profile.AvatarPath = dlg.FileName;
     }
 
     // ═══════════════════════════════════════════════════════════════════
     // ВКЛАДКА «ПРИВЫЧКИ»
     // ═══════════════════════════════════════════════════════════════════
 
-    /// <summary>Добавляет новую привычку в коллекцию по данным из полей ввода.</summary>
+    // Добавляет новую привычку в коллекцию по данным из полей ввода
     private void AddHabit_Click(object sender, RoutedEventArgs e)
     {
         if (string.IsNullOrWhiteSpace(txtHabitName.Text)) return;
@@ -177,7 +175,7 @@ public partial class MainWindow : Window
         UpdateDayProgress();
     }
 
-    /// <summary>Обновляет метку и ProgressBar при изменении значения слайдера продуктивности.</summary>
+    // Обновляет метку и ProgressBar при изменении значения слайдера продуктивности
     private void SlProductivity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         if (lblProductivity is null) return;
@@ -185,7 +183,7 @@ public partial class MainWindow : Window
         UpdateDayProgress();
     }
 
-    /// <summary>Обновляет метку при изменении значения слайдера удовлетворённости.</summary>
+    // Обновляет метку при изменении значения слайдера удовлетворённости
     private void SlSatisfaction_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         if (lblSatisfaction is null) return;
@@ -193,7 +191,7 @@ public partial class MainWindow : Window
         UpdateDayProgress();
     }
 
-    /// <summary>Обрабатывает выбор даты в Calendar и обновляет строку состояния.</summary>
+    // Обрабатывает выбор даты в Calendar и обновляет строку состояния
     private void Calendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
     {
         if (calendar.SelectedDate.HasValue)
@@ -201,51 +199,51 @@ public partial class MainWindow : Window
         UpdateStatus();
     }
 
-    /// <summary>Обрабатывает завершение редактирования ячейки DataGrid и обновляет статус.</summary>
+    // Обрабатывает завершение редактирования ячейки DataGrid и обновляет статус
     private void DgHabits_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
         Dispatcher.InvokeAsync(UpdateStatus);
     }
 
-    /// <summary>Сохраняет или обновляет запись статистики за сегодня в коллекции.</summary>
+    // Сохраняет или обновляет запись статистики за сегодня в коллекции
     private void SaveTodayStatistic()
     {
         var todayStat = HabitService.BuildTodayStatistic(
             Habits, slProductivity.Value, slSatisfaction.Value);
 
-        var existing = _statistics.FirstOrDefault(s => s.Date == DateTime.Today);
+        var existing = statistics.FirstOrDefault(s => s.Date == DateTime.Today);
         if (existing is not null)
-            _statistics.Remove(existing);
+            statistics.Remove(existing);
 
-        _statistics.Add(todayStat);
+        statistics.Add(todayStat);
     }
 
     // ═══════════════════════════════════════════════════════════════════
     // ПАНЕЛЬ ИНСТРУМЕНТОВ
     // ═══════════════════════════════════════════════════════════════════
 
-    /// <summary>Увеличивает значение слайдера продуктивности на 1 при удержании RepeatButton.</summary>
+    // Увеличивает значение слайдера продуктивности на 1 при удержании RepeatButton
     private void RepeatUp_Click(object sender, RoutedEventArgs e)
     {
         if (slProductivity.Value < slProductivity.Maximum)
             slProductivity.Value++;
     }
 
-    /// <summary>Уменьшает значение слайдера продуктивности на 1 при удержании RepeatButton.</summary>
+    // Уменьшает значение слайдера продуктивности на 1 при удержании RepeatButton
     private void RepeatDown_Click(object sender, RoutedEventArgs e)
     {
         if (slProductivity.Value > slProductivity.Minimum)
             slProductivity.Value--;
     }
 
-    /// <summary>Показывает дополнительную боковую панель при активации ToggleButton.</summary>
+    // Показывает дополнительную боковую панель при активации ToggleButton
     private void ToggleEditMode_Checked(object sender, RoutedEventArgs e)
     {
         extraPanel.Visibility = Visibility.Visible;
         UpdateStatus();
     }
 
-    /// <summary>Скрывает дополнительную боковую панель при деактивации ToggleButton.</summary>
+    // Скрывает дополнительную боковую панель при деактивации ToggleButton
     private void ToggleEditMode_Unchecked(object sender, RoutedEventArgs e)
     {
         extraPanel.Visibility = Visibility.Collapsed;
@@ -256,7 +254,7 @@ public partial class MainWindow : Window
     // МЕНЮ
     // ═══════════════════════════════════════════════════════════════════
 
-    /// <summary>Сохраняет профиль и показывает подтверждение.</summary>
+    // Сохраняет профиль и показывает подтверждение
     private void MenuSave_Click(object sender, RoutedEventArgs e)
     {
         SaveProfile_Click(sender, e);
@@ -265,45 +263,42 @@ public partial class MainWindow : Window
                 MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
-    /// <summary>Имитирует загрузку данных из файла (заглушка).</summary>
+    // Имитирует загрузку данных из файла (заглушка)
     private void MenuLoad_Click(object sender, RoutedEventArgs e)
     {
         MessageBox.Show("Функция загрузки из файла будет реализована в следующей версии.",
             "Загрузка", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
-    /// <summary>Завершает работу приложения.</summary>
+    // Завершает работу приложения
     private void MenuExit_Click(object sender, RoutedEventArgs e) =>
         Application.Current.Shutdown();
 
-    /// <summary>Выполняет команду «Копировать» для активного элемента управления.</summary>
+    // Выполняет команду «Копировать» для активного элемента управления
     private void MenuCopy_Click(object sender, RoutedEventArgs e) =>
         ApplicationCommands.Copy.Execute(null, FocusManager.GetFocusedElement(this) as IInputElement);
 
-    /// <summary>Выполняет команду «Вставить» для активного элемента управления.</summary>
+    // Выполняет команду «Вставить» для активного элемента управления
     private void MenuPaste_Click(object sender, RoutedEventArgs e) =>
         ApplicationCommands.Paste.Execute(null, FocusManager.GetFocusedElement(this) as IInputElement);
 
-    /// <summary>Переключает интерфейс на тёмную тему через ResourceDictionary.</summary>
+    // Переключает интерфейс на тёмную тему через ResourceDictionary
     private void MenuDarkTheme_Click(object sender, RoutedEventArgs e) =>
         ApplyTheme("Themes/DarkTheme.xaml");
 
-    /// <summary>Переключает интерфейс на светлую тему через ResourceDictionary.</summary>
+    // Переключает интерфейс на светлую тему через ResourceDictionary
     private void MenuLightTheme_Click(object sender, RoutedEventArgs e) =>
         ApplyTheme("Themes/LightTheme.xaml");
 
-    /// <summary>Обрабатывает включение чекбокса тёмного режима на вкладке настроек.</summary>
+    // Обрабатывает включение чекбокса тёмного режима
     private void ChkDarkMode_Checked(object sender, RoutedEventArgs e) =>
         ApplyTheme("Themes/DarkTheme.xaml");
 
-    /// <summary>Обрабатывает выключение чекбокса тёмного режима на вкладке настроек.</summary>
+    // Обрабатывает выключение чекбокса тёмного режима
     private void ChkDarkMode_Unchecked(object sender, RoutedEventArgs e) =>
         ApplyTheme("Themes/LightTheme.xaml");
 
-    /// <summary>
-    /// Применяет тему, заменяя словарь ресурсов темы в Application.Resources.
-    /// </summary>
-    /// <param name="themeUri">Относительный URI файла темы (.xaml).</param>
+    // Применяет тему, заменяя словарь ресурсов темы в Application.Resources
     private static void ApplyTheme(string themeUri)
     {
         var dict = new ResourceDictionary
@@ -311,6 +306,7 @@ public partial class MainWindow : Window
             Source = new Uri(themeUri, UriKind.Relative)
         };
 
+        // Находим старый словарь темы и удаляем его перед добавлением нового
         var existing = Application.Current.Resources.MergedDictionaries
             .FirstOrDefault(d => d.Source?.OriginalString.Contains("Theme") == true);
 
@@ -320,7 +316,7 @@ public partial class MainWindow : Window
         Application.Current.Resources.MergedDictionaries.Add(dict);
     }
 
-    /// <summary>Обновляет строку состояния при переключении между вкладками.</summary>
+    // Обновляет строку состояния при переключении между вкладками
     private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (statusText is null) return;

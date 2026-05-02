@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/gigil/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/eeba45f8-d752-4b0c-891e-18a94917ffb0/d7697f12-a267-4c06-a126-5f61dc47ab8d/skills/docx/**)",
+      "Bash(pandoc --track-changes=all \"C:\\\\Users\\\\gigil\\\\Downloads\\\\Telegram Desktop\\\\ЛР1_Базовые элементы WPF.docx\" -o output.md)",
+      "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\gigil\\\\Downloads\\\\Telegram Desktop\\\\ЛР1_Базовые элементы WPF.docx\" unpacked/)",
+      "Bash(pip install *)",
+      "Bash(dotnet --version)",
+      "Bash(dotnet build *)",
+      "Bash(git push *)"
+    ]
+  }
+}

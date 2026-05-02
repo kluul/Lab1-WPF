@@ -1,20 +1,20 @@
 namespace Lab1.Models;
 
-/// <summary>Статистика активности пользователя за один день.</summary>
+// Статистика активности пользователя за один день
 public class DayStatistic
 {
-    /// <summary>Дата записи статистики.</summary>
+    // Дата записи статистики
     public DateTime Date { get; set; }
 
-    /// <summary>Оценка продуктивности за день (0–100).</summary>
+    // Оценка продуктивности за день (0–100)
     public int Productivity { get; set; }
 
-    /// <summary>Оценка удовлетворённости за день (0–100).</summary>
+    // Оценка удовлетворённости за день (0–100)
     public int Satisfaction { get; set; }
 
-    /// <summary>Количество выполненных привычек за день.</summary>
+    // Количество выполненных привычек за день
     public int CompletedHabits { get; set; }
 
-    /// <summary>Итоговый прогресс дня в процентах (0–100).</summary>
+    // Итоговый прогресс дня в процентах (0–100)
     public int Progress { get; set; }
 }
