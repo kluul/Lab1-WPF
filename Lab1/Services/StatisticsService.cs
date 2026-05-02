@@ -2,28 +2,23 @@ using Lab1.Models;
 
 namespace Lab1.Services;
 
-// Сервис расчёта и агрегации статистики привычек пользователя
 public static class StatisticsService
 {
-    // Вычисляет среднюю продуктивность по заданной коллекции статистики
     public static double AverageProductivity(IEnumerable<DayStatistic> stats)
     {
         var list = stats.ToList();
         return list.Count == 0 ? 0 : list.Average(s => s.Productivity);
     }
 
-    // Вычисляет среднюю удовлетворённость по заданной коллекции статистики
     public static double AverageSatisfaction(IEnumerable<DayStatistic> stats)
     {
         var list = stats.ToList();
         return list.Count == 0 ? 0 : list.Average(s => s.Satisfaction);
     }
 
-    // Находит день с наибольшим прогрессом в коллекции
     public static DayStatistic? BestDay(IEnumerable<DayStatistic> stats) =>
         stats.OrderByDescending(s => s.Progress).FirstOrDefault();
 
-    // Генерирует тестовую статистику за указанное количество последних дней
     public static List<DayStatistic> GenerateSampleStatistics(int days = 7, int seed = 42)
     {
         var rng = new Random(seed);

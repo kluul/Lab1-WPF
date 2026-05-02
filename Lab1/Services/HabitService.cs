@@ -3,10 +3,8 @@ using System.Collections.ObjectModel;
 
 namespace Lab1.Services;
 
-// Сервис управления коллекцией привычек пользователя
 public static class HabitService
 {
-    // Создаёт набор демонстрационных привычек для первого запуска приложения
     public static ObservableCollection<Habit> CreateSampleHabits() =>
         new()
         {
@@ -17,7 +15,6 @@ public static class HabitService
             new Habit { Name = "Медитация",                  Time = "21:00", IsCompleted = false },
         };
 
-    // Подсчитывает процент выполненных привычек в коллекции
     public static double CalculateCompletionPercent(IEnumerable<Habit> habits)
     {
         var list = habits.ToList();
@@ -25,7 +22,6 @@ public static class HabitService
         return list.Count(h => h.IsCompleted) * 100.0 / list.Count;
     }
 
-    // Создаёт запись статистики за сегодня на основе текущих привычек и оценок
     public static DayStatistic BuildTodayStatistic(
         IEnumerable<Habit> habits, double productivity, double satisfaction)
     {
